@@ -1,3 +1,18 @@
+"""
+Python Script for converting batch nms files into data arrays
+
+No copyright is available. 
+
+For internal lab distribution only. 
+
+Author: Jeremy Ruhter (2023), University of Illinois Institute for Genomic Biology
+
+Usage: python nmsFileConv.py
+
+Description: Scans a directory and converts the nms files into data arrays
+
+"""
+
 #install.packages("tiff")
 #require("tiff")
 #import cv2
