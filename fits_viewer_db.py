@@ -106,7 +106,7 @@ class FITSViewerDB(QMainWindow):
             # Open FITS file
             with fits.open(self.fits_file) as hdul:
                 # Get the primary HDU data
-                self.fits_data = hdul[0].data
+                self.fits_data = hdul[2].data
                 
                 if self.fits_data is None:
                     QMessageBox.warning(self, 'Error', 'No image data found in FITS file.')
@@ -119,6 +119,8 @@ class FITSViewerDB(QMainWindow):
                 img_8bit = (data_normalized * 255).astype(np.uint8)
                 
                 # Display with OpenCV
+                cv2.namedWindow('FITS Image', cv2.WINDOW_NORMAL)
+                cv2.resizeWindow('FITS Image', 800, 600) 
                 cv2.imshow('FITS Image', img_8bit)
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
@@ -176,13 +178,14 @@ class FITSViewerDB(QMainWindow):
                 charset='utf8mb4',
                 cursorclass=pymysql.cursors.DictCursor
             )
+            print('Connected to database')
             
             with connection:
                 with connection.cursor() as cursor:
                     # Insert data
-                    sql = """INSERT INTO Ingress (image_name, PI, SPECIES, DATE, TECH) 
-                             VALUES (%s, %s, %s, %s, %s)"""
-                    cursor.execute(sql, (image_name, pi, species, date, tech))
+                    sql = """INSERT INTO Ingress (image_name, PI, SPECIES, TECH) 
+                             VALUES (%s, %s, %s, %s)"""
+                    cursor.execute(sql, (image_name, pi, species, tech))
                     
                 connection.commit()
                 
@@ -191,10 +194,10 @@ class FITSViewerDB(QMainWindow):
                 self.status_label.setText('Registration successful.')
                 
                 # Clear fields
-                self.pi_input.clear()
-                self.species_input.clear()
-                self.date_input.clear()
-                self.tech_input.clear()
+            self.pi_input.clear()
+            self.species_input.clear()
+            self.date_input.clear()
+            self.tech_input.clear()
                 
         except Exception as e:
             QMessageBox.critical(self, 'Database Error', 
